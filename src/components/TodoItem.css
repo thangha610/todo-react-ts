@@ -1,0 +1,27 @@
+.todo-item {
+    border: 1px solid #ededed;
+    border-top: none;
+}
+
+.todo-item .view {
+    padding: 5px;
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.todo-item .check-img {
+    vertical-align: middle;
+    width: 30px;
+    height: 30px;
+    display: inline-block;
+    padding: 5px;
+}
+
+.todo-item span {
+    display: inline-block;
+    padding: 15px;
+}
+.todo-complete {
+    text-decoration: line-through;
+    opacity: 0.3;
+}

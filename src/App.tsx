@@ -1,26 +1,38 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import TodoItem from './components/TodoItem';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+interface IAppProps {
+
+}
+
+interface IAppState {
+  todoItems: any;
+}
+class App extends React.Component<IAppProps, IAppState> {
+  constructor(props: IAppProps) {
+    super(props);
+    this.state = {
+      todoItems: [
+        { title: 'Buy snack', isComplete: false },
+        { title: 'Go to company', isComplete: true },
+        { title: 'Play soccer', isComplete: false },
+      ]
+    }
+  }
+
+  public render() {
+    return (
+      <div className="App">
+        {
+          this.state.todoItems.map((item : any, index: number) => {
+           return  <TodoItem key={index} item={item} />
+          })
+        }
+      </div>
+    );
+  }
+
 }
 
 export default App;

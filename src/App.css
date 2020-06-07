@@ -1,8 +1,9 @@
 .App {
   margin: 0 auto;
   width: 600px;
-  font-size: 18px;
+  font: 24px 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-weight: 300;
+  color: #4d4d4d;
 }
 
 .App ul {
@@ -26,12 +27,17 @@
   opacity: 0.3;
 }
 
+.App .complete {
+  opacity: 1;
+}
+
 .App header input {
   border: none;
   height: auto;
   width: 100%;
+  font: 24px 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-weight: 300;
-  font-size: 18px;
+  font-size: 24px;
 }
 
 .App header input::placeholder {

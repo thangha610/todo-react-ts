@@ -1,30 +1,20 @@
+/// <reference path="./interfaces.d.ts"/>
 import React from 'react';
 import './App.css';
 import TodoItem from './components/TodoItem';
 import checkAll from './assets/img/down-arrow.svg'
 import * as ReactDOM from "react-dom";
+import classNames from "classnames";
 
-interface IAppProps {
-}
-
-interface IAppState {
-  todoItems: any;
-  newItem: any;
-}
-class App extends React.Component<IAppProps, IAppState> {
-  public state: IAppState;
+class App extends React.Component<ITodoAppProps, ITodoAppState> implements ITodoApp {
+  public state: ITodoAppState;
   private isCheckAll = false;
   private newTodoRef = React.createRef<HTMLInputElement>()
 
-  constructor(props: IAppProps) {
+  constructor(props: ITodoAppState) {
     super(props);
     this.state = {
-      todoItems: [
-        { title: 'Buy snack', isComplete: false },
-        { title: 'Go to company', isComplete: true },
-        { title: 'Play soccer', isComplete: false },
-      ],
-      newItem: ''
+      todoItems: [],
     }
   }
 
@@ -37,7 +27,6 @@ class App extends React.Component<IAppProps, IAppState> {
 
     const node = this.newTodoRef.current
     let val = (ReactDOM.findDOMNode(node) as HTMLInputElement).value.trim();
-    console.log(val, 92392939)
     if (val) {
       this.addTodoItem(val);
       (ReactDOM.findDOMNode(node) as HTMLInputElement).value = '';
@@ -47,7 +36,7 @@ class App extends React.Component<IAppProps, IAppState> {
   public addTodoItem(val: string) {
     let newTodoItem = {
       title: val, 
-      isComplete: false
+      isCompleted: false
     }
     this.setState({
       todoItems: [
@@ -57,20 +46,27 @@ class App extends React.Component<IAppProps, IAppState> {
     })
   }
 
-  public toggle(item?: any, ) {
-      const isComplete = item.isComplete;
+  public toggle(item: ITodoItem, ) {
+      const isCompleted = item.isCompleted;
       const index = this.state.todoItems.indexOf(item);
       const { todoItems } = this.state;
-      todoItems[index].isComplete = !isComplete;
+      todoItems[index].isCompleted = !isCompleted;
+      let isCheckAll = todoItems.find((item: any) => item.isCompleted === false)
+      if (isCheckAll === undefined) {
+        this.isCheckAll = true;
+      } else {
+        this.isCheckAll = false;
+      }
       this.setState({
         todoItems: todoItems
-      })  
+      })
   }
+
   public toggleAll() {
     this.isCheckAll = !this.isCheckAll;
     let that = this;
     let todoItems = this.state.todoItems.map((item: any) => {
-      item.isComplete = !that.isCheckAll;
+      item.isCompleted = that.isCheckAll;
       return item;
     })
     this.setState({
@@ -91,15 +87,33 @@ class App extends React.Component<IAppProps, IAppState> {
     })
   }
 
-
   public render() {
     const { todoItems } = this.state;
+    let main;
+
+    if(this.state.todoItems.length) {
+      main = (
+        <ul>
+            {
+              todoItems.length > 0 && todoItems.map((item: ITodoItem, index: number) => {
+                return <TodoItem
+                  key={index}
+                  todo={item}
+                  onToggle={this.toggle.bind(this, item)}
+                  onDestroy={this.destroy.bind(this, item)}
+                />
+              })
+            }
+          </ul>
+      );
+    }
+
     return (
       <div className="App">
         <h1>Todos App</h1>
         <div className="todo-content">
           <header>
-            <img src={checkAll} alt="" onClick={this.toggleAll.bind(this)}/>
+            <img className={classNames({complete: this.isCheckAll})} src={checkAll} alt="" onClick={this.toggleAll.bind(this)}/>
             <input
               ref={this.newTodoRef}
               placeholder="What needs to be done"
@@ -108,23 +122,11 @@ class App extends React.Component<IAppProps, IAppState> {
               autoFocus={true}
             />
           </header>
-          <ul>
-            {
-              todoItems.length > 0 && todoItems.map((item: any, index: number) => {
-                return <TodoItem
-                  key={index}
-                  item={item}
-                  toggle={this.toggle.bind(this, item)}
-                  destroy={this.destroy.bind(this, item)}
-                />
-              })
-            }
-          </ul>
+          {main}
         </div>
       </div>
     );
   }
-
 }
 
 export default App;
